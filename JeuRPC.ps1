@@ -11,15 +11,46 @@ $FontBtn = 'Verdana,10,style=Bold'
 $FontLabel = 'Verdana,16,style=Bold'
 
 $frmJeuRPC                       = New-Object system.Windows.Forms.Form
-$frmJeuRPC.ClientSize            = '480,720'
+$frmJeuRPC.ClientSize            = '480,520'
 $frmJeuRPC.text                  = "Jeu: Rroche x Papier x Ciseau par Abner S. Torres"
-$frmJeuRPC.BackColor             = "#d5d5d5"
+$frmJeuRPC.BackColor             = "White"
 $frmJeuRPC.TopMost               = $True
 $frmJeuRPC.KeyPreview            = $True
 $frmJeuRPC.StartPosition         = "CenterScreen"
 $frmJeuRPC.Icon                  = "$PSScriptRoot\img\fierbourg.ico"
 $frmJeuRPC.MaximumSize           = $frmJeuRPC.Size
 $frmJeuRPC.MinimumSize           = $frmJeuRPC.Size
+
+#
+# tabControl
+#
+$tabControl            = New-object System.Windows.Forms.TabControl
+$tabControl.Location   = '0, 0' # position
+$tabControl.Name       = "tabControl"
+$tabControl.Size       = $frmJeuRPC.Size
+$tabControl.TabIndex   = 0 # sélectionné le tabpage1 par défaut
+$tabControl.Appearance = "Button" # permet de de rendre les TabPage d'une couleur unie
+$tabControl.Alignment  = "Top" # Place les Tab en haut (c'est la valeur par défaut), on peut mettre Right ou Left aussi
+
+#
+# les différents TabPage de tabControl
+#
+
+# TabPage1
+$tabPage1            = New-Object System.Windows.Forms.TabPage
+$tabPage1.Name       = 'tabpage1'
+$tabPage1.Text       = 'Jeu'
+#$tabPage1.BackColor  = "LightCoral"
+$tabPage1.TabIndex   = 0 
+$tabPage1.Enabled    = $true # Permet de sélectionner un objet sur ce tab
+
+# TabPage2
+$tabPage2            = New-Object System.Windows.Forms.TabPage
+$tabPage2.Name       = 'tabpage2'
+$tabPage2.Text       = 'Réegles du jeu et Lisez-moi.txt'
+#$tabPage2.BackColor  = "LightGreen"
+$tabPage2.TabIndex   = 1
+$tabPage2.Enabled    = $true # Empêche de sélectionner un objet sur ce tab
 
 $lblTitile                       = New-Object system.Windows.Forms.Label
 $lblTitile.text                  = "Rroche x Papier x Ciseau"
@@ -77,12 +108,13 @@ $gbRadio.height                  = 25
 $gbRadio.width                   = 300
 $gbRadio.location                = New-Object System.Drawing.Point(75,125)
 
-$rdbRoche                        = New-Object system.Windows.Forms.RadioButton
-$rdbRoche.AutoSize               = $true
-$rdbRoche.width                  = 104
-$rdbRoche.height                 = 20
-$rdbRoche.location               = New-Object System.Drawing.Point(25,8)
-$rdbRoche.Font                   = $Font
+$rbtRoche                        = New-Object system.Windows.Forms.RadioButton
+$rbtRoche.AutoSize               = $true
+$rbtRoche.width                  = 104
+$rbtRoche.height                 = 20
+$rbtRoche.location               = New-Object System.Drawing.Point(25,8)
+$rbtRoche.Font                   = $Font
+$rbtRoche.Checked                = $true
 
 $rbtPapier                       = New-Object system.Windows.Forms.RadioButton
 $rbtPapier.AutoSize              = $true
@@ -100,7 +132,7 @@ $rbtCiseau.Font                  = $Font
 
 $gbResult                         = New-Object system.Windows.Forms.Groupbox
 $gbResult.Text                    = "Résultat du match"
-$gbResult.height                  = 90
+$gbResult.height                  = 100
 $gbResult.width                   = 460
 $gbResult.location                = New-Object System.Drawing.Point(5,280)
 
@@ -144,16 +176,16 @@ $pbAdversaire.SizeMode           = [System.Windows.Forms.PictureBoxSizeMode]::zo
 
 $gbScore                         = New-Object system.Windows.Forms.Groupbox
 $gbScore.Text                    = "Score des jeux"
-$gbScore.height                  = 40
+$gbScore.height                  = 45
 $gbScore.width                   = 460
-$gbScore.location                = New-Object System.Drawing.Point(5,370)
+$gbScore.location                = New-Object System.Drawing.Point(5,380)
 
 $lblScoreVous                    = New-Object system.Windows.Forms.Label
 $lblScoreVous.text               = "00"
 $lblScoreVous.AutoSize           = $true
 $lblScoreVous.width              = 25
 $lblScoreVous.height             = 10
-$lblScoreVous.location           = New-Object System.Drawing.Point(120,5)
+$lblScoreVous.location           = New-Object System.Drawing.Point(120,10)
 $lblScoreVous.Font               = $FontLabel
 
 $lblScoreAdv                     = New-Object system.Windows.Forms.Label
@@ -161,7 +193,7 @@ $lblScoreAdv.text                = "00"
 $lblScoreAdv.AutoSize            = $true
 $lblScoreAdv.width               = 25
 $lblScoreAdv.height              = 10
-$lblScoreAdv.location            = New-Object System.Drawing.Point(310,5)
+$lblScoreAdv.location            = New-Object System.Drawing.Point(310,10)
 $lblScoreAdv.Font                = $FontLabel
 
 $btnJouer                        = New-Object system.Windows.Forms.Button
@@ -184,7 +216,7 @@ $lblRegles.text                    = "Règles de jeu"
 $lblRegles.AutoSize                = $true
 $lblRegles.width                   = 25
 $lblRegles.height                  = 10
-$lblRegles.location                = New-Object System.Drawing.Point(160,415)
+$lblRegles.location                = New-Object System.Drawing.Point(160,5)
 $lblRegles.Font                    = $FontLabel
 
 $lblGagnant                   = New-Object system.Windows.Forms.Label
@@ -192,7 +224,7 @@ $lblGagnant.text              = "Le gagnant est en vert"
 $lblGagnant.AutoSize          = $true
 $lblGagnant.width             = 25
 $lblGagnant.height            = 10
-$lblGagnant.location          = New-Object System.Drawing.Point(100,525)
+$lblGagnant.location          = New-Object System.Drawing.Point(100,125)
 $lblGagnant.Font              = $FontLabel
 
 $txtRegles                       = New-Object system.Windows.Forms.RichTextBox
@@ -200,14 +232,14 @@ $txtRegles.multiline             = $True
 $txtRegles.Enabled               = $False
 $txtRegles.width                 = 465
 $txtRegles.height                = 70
-$txtRegles.location              = New-Object System.Drawing.Point(5,440)
+$txtRegles.location              = New-Object System.Drawing.Point(5,40)
 $txtRegles.Font                  = $Font
 $txtRegles.Text                  = "Une fois à trois les joueurs révèlent leur main (roche, papier ou ciseau) en même temps. La plus forte des formes l'emporte et le joueur marque le point gagnant. Si les deux joueurs utilisent la même forme c'est un match nul."
 
 $pbRegles                        = New-Object system.Windows.Forms.PictureBox
 $pbRegles.width                  = 340
 $pbRegles.height                 = 120
-$pbRegles.location               = New-Object System.Drawing.Point(60,550)
+$pbRegles.location               = New-Object System.Drawing.Point(60,150)
 $pbRegles.imageLocation          = "$PSScriptRoot\img\regles.png"
 $pbRegles.SizeMode               = [System.Windows.Forms.PictureBoxSizeMode]::zoom
 
@@ -215,13 +247,37 @@ $btnFinir                        = New-Object system.Windows.Forms.Button
 $btnFinir.text                   = "FINIR ET ENREGISTRER LE LOG"
 $btnFinir.width                  = 260
 $btnFinir.height                 = 40
-$btnFinir.location               = New-Object System.Drawing.Point(100,670)
+$btnFinir.location               = New-Object System.Drawing.Point(100,440)
 $btnFinir.Font                   = $FontBtn
 
-$frmJeuRPC.controls.AddRange(@($btnRoche,$lblTitile,$btnCiseau,$btnPapier,$pbRoche,$pbPapier,$pbCiseau,$gbRadio,$gbResult,$gbScore,$btnJouer,$txtMessages,$lblVous,$lblAdversaire,$lblVersus,$pbVous,$pbAdversaire,$txtRegles,$lblScoreVous,$lblScoreAdv,$pbRegles,$btnFinir,$lblRegles, $lblGagnant))
-$gbRadio.controls.AddRange(@($rdbRoche,$rbtPapier,$rbtCiseau))
+$btnLisezMoi                        = New-Object system.Windows.Forms.Button
+$btnLisezMoi.text                   = "Ouvrir Lizez-moi.txt"
+$btnLisezMoi.width                  = 260
+$btnLisezMoi.height                 = 30
+$btnLisezMoi.location               = New-Object System.Drawing.Point(100,290)
+$btnLisezMoi.Font                   = $FontBtn
+
+#$frmJeuRPC.controls.AddRange(@($btnRoche,$lblTitile,$btnCiseau,$btnPapier,$pbRoche,$pbPapier,$pbCiseau,$gbRadio,$gbResult,$gbScore,$btnJouer,$txtMessages,$lblVous,$lblAdversaire,$lblVersus,$pbVous,$pbAdversaire,$txtRegles,$lblScoreVous,$lblScoreAdv,$pbRegles,$btnFinir,$lblRegles, $lblGagnant))
+
+# Ajouter les contrôles au formulaire
+$frmJeuRPC.controls.AddRange(@($tabControl))
+
+# Ajouter les contrôles à tabControl
+$tabControl.Controls.AddRange(@($tabPage1, $tabPage2)) # addrange permet d'ajouter plusieurs objets en même temps
+
+$gbRadio.controls.AddRange(@($rbtRoche,$rbtPapier,$rbtCiseau))
 $gbResult.controls.AddRange(@($lblVous,$lblAdversaire,$lblVersus,$pbVous,$pbAdversaire))
 $gbScore.controls.AddRange(@($lblScoreVous,$lblScoreAdv))
+
+# Ajouter les contrôles à TabPage1
+$TabPage1.Controls.AddRange(@($lblTitile,$btnRoche,$btnCiseau,$btnPapier,$pbRoche,$pbPapier,$pbCiseau,$gbRadio,$gbResult,$gbScore,$btnJouer,$txtMessages,$gbResult,$gbScore,$btnFinir))
+
+# Ajouter les contrôles à TabPage2
+$TabPage2.Controls.AddRange(@($txtRegles,$pbRegles,$lblRegles, $lblGagnant,$btnLisezMoi))
+
+$btnRoche.Add_Click({ $rbtRoche.Checked = $True})
+$btnPapier.Add_Click({ $rbtPapier.Checked = $True})
+$btnCiseau.Add_Click({ $rbtCiseau.Checked = $True})
 
 # Permet de quitter le script avec la touche Échap
 $frmJeuRPC.Add_KeyDown( {  
