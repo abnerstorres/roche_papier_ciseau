@@ -113,7 +113,9 @@ $rbtRoche.AutoSize               = $true
 $rbtRoche.width                  = 104
 $rbtRoche.height                 = 20
 $rbtRoche.location               = New-Object System.Drawing.Point(25,8)
+$rbtRoche.Text                   = "Roche"
 $rbtRoche.Font                   = $Font
+
 $rbtRoche.Checked                = $true
 
 $rbtPapier                       = New-Object system.Windows.Forms.RadioButton
@@ -121,6 +123,7 @@ $rbtPapier.AutoSize              = $true
 $rbtPapier.width                 = 104
 $rbtPapier.height                = 20
 $rbtPapier.location              = New-Object System.Drawing.Point(150,8)
+$rbtPapier.Text                  = "Papier"
 $rbtPapier.Font                  = $Font
 
 $rbtCiseau                       = New-Object system.Windows.Forms.RadioButton
@@ -128,6 +131,7 @@ $rbtCiseau.AutoSize              = $true
 $rbtCiseau.width                 = 104
 $rbtCiseau.height                = 20
 $rbtCiseau.location              = New-Object System.Drawing.Point(270,8)
+$rbtCiseau.Text                  = "Ciseau"
 $rbtCiseau.Font                  = $Font
 
 $gbResult                         = New-Object system.Windows.Forms.Groupbox
@@ -247,13 +251,21 @@ $btnFinir                        = New-Object system.Windows.Forms.Button
 $btnFinir.text                   = "FINIR ET ENREGISTRER LE LOG"
 $btnFinir.width                  = 260
 $btnFinir.height                 = 40
-$btnFinir.location               = New-Object System.Drawing.Point(100,440)
+$btnFinir.location               = New-Object System.Drawing.Point(5,440)
 $btnFinir.Font                   = $FontBtn
 
+$btnLog                        = New-Object system.Windows.Forms.Button
+$btnLog.text                   = "OUVRIR LE LOG"
+$btnLog.width                  = 175
+$btnLog.height                 = 40
+$btnLog.location               = New-Object System.Drawing.Point(290,440)
+$btnLog.Font                   = $FontBtn
+$btnLog.Enabled                = $False
+
 $btnLisezMoi                        = New-Object system.Windows.Forms.Button
-$btnLisezMoi.text                   = "Ouvrir Lizez-moi.txt"
+$btnLisezMoi.text                   = "Ouvrir Lizezmoi.txt"
 $btnLisezMoi.width                  = 260
-$btnLisezMoi.height                 = 30
+$btnLisezMoi.height                 = 40
 $btnLisezMoi.location               = New-Object System.Drawing.Point(100,290)
 $btnLisezMoi.Font                   = $FontBtn
 
@@ -270,14 +282,32 @@ $gbResult.controls.AddRange(@($lblVous,$lblAdversaire,$lblVersus,$pbVous,$pbAdve
 $gbScore.controls.AddRange(@($lblScoreVous,$lblScoreAdv))
 
 # Ajouter les contrôles à TabPage1
-$TabPage1.Controls.AddRange(@($lblTitile,$btnRoche,$btnCiseau,$btnPapier,$pbRoche,$pbPapier,$pbCiseau,$gbRadio,$gbResult,$gbScore,$btnJouer,$txtMessages,$gbResult,$gbScore,$btnFinir))
+$TabPage1.Controls.AddRange(@($lblTitile,$btnRoche,$btnCiseau,$btnPapier,$pbRoche,$pbPapier,$pbCiseau,$gbRadio,$gbResult,$gbScore,$btnJouer,$txtMessages,$gbResult,$gbScore,$btnFinir,$btnLog))
 
 # Ajouter les contrôles à TabPage2
 $TabPage2.Controls.AddRange(@($txtRegles,$pbRegles,$lblRegles, $lblGagnant,$btnLisezMoi))
 
+
 $btnRoche.Add_Click({ $rbtRoche.Checked = $True})
 $btnPapier.Add_Click({ $rbtPapier.Checked = $True})
 $btnCiseau.Add_Click({ $rbtCiseau.Checked = $True})
+$btnJouer.Add_Click({ 
+
+
+ 
+
+})
+$btnLisezMoi.Add_Click({ Notepad "$PSScriptRoot\lisezmoi.txt"})
+
+$btnLog.Add_Click({ 
+                      if(Test-Path "$PSScriptRoot\log.txt"){
+                            Notepad "$PSScriptRoot\log.txt"
+                        }
+                      else{
+                            [System.Windows.MessageBox]::Show("Le log.txt n'a pas été enregistré!","Error !","Ok","Error")
+                      }
+    
+                  })
 
 # Permet de quitter le script avec la touche Échap
 $frmJeuRPC.Add_KeyDown( {  
@@ -287,5 +317,61 @@ $frmJeuRPC.Add_KeyDown( {
 } )
 
 #endregion événements }
+
+function Jouer {
+    Param
+    (
+         [Parameter(Mandatory=$true, Position=0)]
+         [string] $ChoixVous,
+         [Parameter(Mandatory=$true, Position=1)]
+         [string]$ChoixAdversaire
+    )
+  If ($ChoixVous -eq "Roche" -AND $ChoixAdversaire -eq "Papier")
+    {
+        $Gagnant = "Adversaire"
+    }
+    elseif($ChoixVous -eq "Roche" -AND $ChoixAdversaire -eq "Ciseau")
+    {
+        $Gagnant = "Vous"
+    }
+    elseif($ChoixVous -eq "Papier" -AND $ChoixAdversaire -eq "Roche")
+    {
+        $Gagnant = "Vous"
+    }
+    elseif($ChoixVous -eq "Papier" -AND $ChoixAdversaire -eq "Ciseau")
+    {
+        $Gagnant = "Adversaire"
+    }
+    elseif($ChoixVous -eq "Ciseau" -AND $ChoixAdversaire -eq "Roche")
+    {
+        $Gagnant = "Adversaire"
+    }
+    elseif($ChoixVous -eq "Ciseau" -AND $ChoixAdversaire -eq "Papier")
+    {
+        $Gagnant = "Vous"
+    }
+    else
+    {
+        $Gagnant = "Egalite"
+    }
+    return $Gagnant
+}
+
+function ChoixVous {
+ for ($i = 0; $i -lt 3; $i++)
+    { 
+        if($gbRadio.Controls[$i].Checked)
+        $gbRadio.Controls[$i].Checked
+    }
+function ChoixAdver {
+  Switch (Get-Random -Minimum 1 -Maximum 4)
+  {
+	  '1' {$Ordi = "Roche"}
+	  '2' {$Ordi = "Papier"}
+	  Default {$Ordi = "Ciseau"}
+  }
+  Write-Host $Ordi
+  return $Ordi
+}
 
 [void]$frmJeuRPC.ShowDialog()
