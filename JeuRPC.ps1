@@ -6,9 +6,22 @@
 Add-Type -AssemblyName System.Windows.Forms
 [System.Windows.Forms.Application]::EnableVisualStyles()
 
-$Font = 'Verdana,10'
-$FontBtn = 'Verdana,10,style=Bold'
-$FontLabel = 'Verdana,16,style=Bold'
+$Font                    = 'Verdana,10'
+$FontBtn                 = 'Verdana,10,style=Bold'
+$FontLabel               = 'Verdana,16,style=Bold'
+$imgDir                  = "$PSScriptRoot\img"
+$imgDefault              = "$imgDir\default.png"
+$imgRoche                = "$imgDir\roche.png"
+$imgPapier               = "$imgDir\papier.png"
+$imgCiseau               = "$imgDir\ciseau.png"
+$imgRocheInv             = "$imgDir\rocheInv.png"
+$imgPapierInv            = "$imgDir\papierInv.png"
+$imgCiseauInv            = "$imgDir\ciseauInv.png"
+$Global:FichierLizemoi   = "$PSScriptRoot\lisezmoi.txt"
+$Global:FichierLog       = "$PSScriptRoot\log.txt"
+$Global:Matches          = 0
+$Global:ScoreVous        = 0
+$Global:ScoreAdv         = 0
 
 $frmJeuRPC                       = New-Object system.Windows.Forms.Form
 $frmJeuRPC.ClientSize            = '480,520'
@@ -17,7 +30,7 @@ $frmJeuRPC.BackColor             = "White"
 $frmJeuRPC.TopMost               = $True
 $frmJeuRPC.KeyPreview            = $True
 $frmJeuRPC.StartPosition         = "CenterScreen"
-$frmJeuRPC.Icon                  = "$PSScriptRoot\img\fierbourg.ico"
+$frmJeuRPC.Icon                  = "$imgDir\fierbourg.ico"
 $frmJeuRPC.MaximumSize           = $frmJeuRPC.Size
 $frmJeuRPC.MinimumSize           = $frmJeuRPC.Size
 
@@ -86,33 +99,34 @@ $pbRoche                         = New-Object system.Windows.Forms.PictureBox
 $pbRoche.width                   = 60
 $pbRoche.height                  = 48
 $pbRoche.location                = New-Object System.Drawing.Point(75,80)
-$pbRoche.imageLocation           = "$PSScriptRoot\img\roche.png"
+$pbRoche.imageLocation           = "$imgRoche"
 $pbRoche.SizeMode                = [System.Windows.Forms.PictureBoxSizeMode]::zoom
+
 
 $pbPapier                        = New-Object system.Windows.Forms.PictureBox
 $pbPapier.width                  = 60
 $pbPapier.height                 = 48
 $pbPapier.location               = New-Object System.Drawing.Point(200,80)
-$pbPapier.imageLocation          = "$PSScriptRoot\img\papier.png"
+$pbPapier.imageLocation          = "$imgPapier"
 $pbPapier.SizeMode               = [System.Windows.Forms.PictureBoxSizeMode]::zoom
 
 $pbCiseau                        = New-Object system.Windows.Forms.PictureBox
 $pbCiseau.width                  = 60
 $pbCiseau.height                 = 48
 $pbCiseau.location               = New-Object System.Drawing.Point(317,80)
-$pbCiseau.imageLocation          = "$PSScriptRoot\img\ciseau.png"
+$pbCiseau.imageLocation          = "$imgCiseau"
 $pbCiseau.SizeMode               = [System.Windows.Forms.PictureBoxSizeMode]::zoom
 
 $gbRadio                         = New-Object system.Windows.Forms.Groupbox
-$gbRadio.height                  = 25
-$gbRadio.width                   = 300
-$gbRadio.location                = New-Object System.Drawing.Point(75,125)
+$gbRadio.height                  = 30
+$gbRadio.width                   = 320
+$gbRadio.location                = New-Object System.Drawing.Point(65,125)
 
 $rbtRoche                        = New-Object system.Windows.Forms.RadioButton
 $rbtRoche.AutoSize               = $true
-$rbtRoche.width                  = 104
+$rbtRoche.width                  = 100
 $rbtRoche.height                 = 20
-$rbtRoche.location               = New-Object System.Drawing.Point(25,8)
+$rbtRoche.location               = New-Object System.Drawing.Point(10,8)
 $rbtRoche.Text                   = "Roche"
 $rbtRoche.Font                   = $Font
 
@@ -122,7 +136,7 @@ $rbtPapier                       = New-Object system.Windows.Forms.RadioButton
 $rbtPapier.AutoSize              = $true
 $rbtPapier.width                 = 104
 $rbtPapier.height                = 20
-$rbtPapier.location              = New-Object System.Drawing.Point(150,8)
+$rbtPapier.location              = New-Object System.Drawing.Point(135,8)
 $rbtPapier.Text                  = "Papier"
 $rbtPapier.Font                  = $Font
 
@@ -130,7 +144,7 @@ $rbtCiseau                       = New-Object system.Windows.Forms.RadioButton
 $rbtCiseau.AutoSize              = $true
 $rbtCiseau.width                 = 104
 $rbtCiseau.height                = 20
-$rbtCiseau.location              = New-Object System.Drawing.Point(270,8)
+$rbtCiseau.location              = New-Object System.Drawing.Point(250,8)
 $rbtCiseau.Text                  = "Ciseau"
 $rbtCiseau.Font                  = $Font
 
@@ -168,14 +182,14 @@ $pbVous                          = New-Object system.Windows.Forms.PictureBox
 $pbVous.width                    = 60
 $pbVous.height                   = 48
 $pbVous.location                 = New-Object System.Drawing.Point(110,40)
-$pbVous.imageLocation            = "$PSScriptRoot\img\default.png"
+$pbVous.imageLocation            = "$imgDefault"
 $pbVous.SizeMode                 = [System.Windows.Forms.PictureBoxSizeMode]::zoom
 
 $pbAdversaire                    = New-Object system.Windows.Forms.PictureBox
 $pbAdversaire.width              = 60
 $pbAdversaire.height             = 48
 $pbAdversaire.location           = New-Object System.Drawing.Point(300,40)
-$pbAdversaire.imageLocation      = "$PSScriptRoot\img\default.png"
+$pbAdversaire.imageLocation      = "$imgDefault"
 $pbAdversaire.SizeMode           = [System.Windows.Forms.PictureBoxSizeMode]::zoom
 
 $gbScore                         = New-Object system.Windows.Forms.Groupbox
@@ -185,7 +199,7 @@ $gbScore.width                   = 460
 $gbScore.location                = New-Object System.Drawing.Point(5,380)
 
 $lblScoreVous                    = New-Object system.Windows.Forms.Label
-$lblScoreVous.text               = "00"
+$lblScoreVous.text               = "000"
 $lblScoreVous.AutoSize           = $true
 $lblScoreVous.width              = 25
 $lblScoreVous.height             = 10
@@ -193,7 +207,7 @@ $lblScoreVous.location           = New-Object System.Drawing.Point(120,10)
 $lblScoreVous.Font               = $FontLabel
 
 $lblScoreAdv                     = New-Object system.Windows.Forms.Label
-$lblScoreAdv.text                = "00"
+$lblScoreAdv.text                = "000"
 $lblScoreAdv.AutoSize            = $true
 $lblScoreAdv.width               = 25
 $lblScoreAdv.height              = 10
@@ -207,13 +221,13 @@ $btnJouer.height                 = 30
 $btnJouer.location               = New-Object System.Drawing.Point(134,160)
 $btnJouer.Font                   = $FontBtn
 
-$txtMessages                     = New-Object system.Windows.Forms.RichTextBox
-$txtMessages.multiline           = $True
-$txtMessages.Enabled             = $False
-$txtMessages.width               = 460
-$txtMessages.height              = 80
-$txtMessages.location            = New-Object System.Drawing.Point(10,195)
-$txtMessages.Font                = $Font
+$rtbAction                     = New-Object system.Windows.Forms.RichTextBox
+$rtbAction.multiline           = $True
+$rtbAction.Enabled             = $False
+$rtbAction.width               = 460
+$rtbAction.height              = 80
+$rtbAction.location            = New-Object System.Drawing.Point(10,195)
+$rtbAction.Font                = $Font
 
 $lblRegles                         = New-Object system.Windows.Forms.Label
 $lblRegles.text                    = "Règles de jeu"
@@ -244,7 +258,7 @@ $pbRegles                        = New-Object system.Windows.Forms.PictureBox
 $pbRegles.width                  = 340
 $pbRegles.height                 = 120
 $pbRegles.location               = New-Object System.Drawing.Point(60,150)
-$pbRegles.imageLocation          = "$PSScriptRoot\img\regles.png"
+$pbRegles.imageLocation          = "$imgDir\regles.png"
 $pbRegles.SizeMode               = [System.Windows.Forms.PictureBoxSizeMode]::zoom
 
 $btnFinir                        = New-Object system.Windows.Forms.Button
@@ -269,8 +283,6 @@ $btnLisezMoi.height                 = 40
 $btnLisezMoi.location               = New-Object System.Drawing.Point(100,290)
 $btnLisezMoi.Font                   = $FontBtn
 
-#$frmJeuRPC.controls.AddRange(@($btnRoche,$lblTitile,$btnCiseau,$btnPapier,$pbRoche,$pbPapier,$pbCiseau,$gbRadio,$gbResult,$gbScore,$btnJouer,$txtMessages,$lblVous,$lblAdversaire,$lblVersus,$pbVous,$pbAdversaire,$txtRegles,$lblScoreVous,$lblScoreAdv,$pbRegles,$btnFinir,$lblRegles, $lblGagnant))
-
 # Ajouter les contrôles au formulaire
 $frmJeuRPC.controls.AddRange(@($tabControl))
 
@@ -282,7 +294,7 @@ $gbResult.controls.AddRange(@($lblVous,$lblAdversaire,$lblVersus,$pbVous,$pbAdve
 $gbScore.controls.AddRange(@($lblScoreVous,$lblScoreAdv))
 
 # Ajouter les contrôles à TabPage1
-$TabPage1.Controls.AddRange(@($lblTitile,$btnRoche,$btnCiseau,$btnPapier,$pbRoche,$pbPapier,$pbCiseau,$gbRadio,$gbResult,$gbScore,$btnJouer,$txtMessages,$gbResult,$gbScore,$btnFinir,$btnLog))
+$TabPage1.Controls.AddRange(@($lblTitile,$btnRoche,$btnCiseau,$btnPapier,$pbRoche,$pbPapier,$pbCiseau,$gbRadio,$gbResult,$gbScore,$btnJouer,$rtbAction,$gbResult,$gbScore,$btnFinir,$btnLog))
 
 # Ajouter les contrôles à TabPage2
 $TabPage2.Controls.AddRange(@($txtRegles,$pbRegles,$lblRegles, $lblGagnant,$btnLisezMoi))
@@ -291,17 +303,32 @@ $TabPage2.Controls.AddRange(@($txtRegles,$pbRegles,$lblRegles, $lblGagnant,$btnL
 $btnRoche.Add_Click({ $rbtRoche.Checked = $True})
 $btnPapier.Add_Click({ $rbtPapier.Checked = $True})
 $btnCiseau.Add_Click({ $rbtCiseau.Checked = $True})
+$pbRoche.Add_Click({ $rbtRoche.Checked = $True})
+$pbPapier.Add_Click({ $rbtPapier.Checked = $True})
+$pbCiseau.Add_Click({ $rbtCiseau.Checked = $True})
+
 $btnJouer.Add_Click({ 
-
-
- 
+    $Vous = ChoixVous
+    $Adver = ChoixAdver 
+    $Gagnant = $(Jouer $Vous $Adver)
+    $Global:Matches += 1
+    AfficheAction("Matche: $($Global:Matches.ToString("000")) `t`| Vous: $Vous `t`| Adversaire: $Adver `t`| Gagnant: $Gagnant")
+    if($Gagnant -eq "Vous"){
+        $Global:ScoreVous += 1
+        $lblScoreVous.Text = $Global:ScoreVous.ToString("000")
+    }
+    if($Gagnant -eq "Adversaire"){
+        $Global:ScoreAdv += 1
+        $lblScoreAdv.Text = $Global:ScoreAdv.ToString("000")
+    }
 
 })
-$btnLisezMoi.Add_Click({ Notepad "$PSScriptRoot\lisezmoi.txt"})
+
+$btnLisezMoi.Add_Click({ Notepad $Global:FichierLizemoi})
 
 $btnLog.Add_Click({ 
-                      if(Test-Path "$PSScriptRoot\log.txt"){
-                            Notepad "$PSScriptRoot\log.txt"
+                      if(Test-Path "$Global:FichierLog"){
+                            Notepad "$Global:FichierLog"
                         }
                       else{
                             [System.Windows.MessageBox]::Show("Le log.txt n'a pas été enregistré!","Error !","Ok","Error")
@@ -309,6 +336,22 @@ $btnLog.Add_Click({
     
                   })
 
+$btnFinir.Add_Click({
+                       if($lblScoreVous.Text -gt $lblScoreAdv.Text){
+                        $GagnantJeu = "Vous"
+                       }
+                       elseif($lblScoreVous.Text -lt $lblScoreAdv.Text){
+                        $GagnantJeu = "Adversaire"
+                       }
+                       else{
+                        $GagnantJeu = "Égalité"
+                       }
+
+                       AfficheAction("Score final - Vous: $($lblScoreVous.Text) `t`| Adversaire: $($lblScoreAdv.Text) `t`| Gagnant du Jeu: $GagnantJeu")
+                       $rtbAction.text | Out-File $Global:FichierLog -Force
+                       $btnLog.Enabled = $True
+                       $btnJouer.Enabled = $False
+                    }) 
 # Permet de quitter le script avec la touche Échap
 $frmJeuRPC.Add_KeyDown( {  
     if ($_.KeyCode -eq "Escape") { 
@@ -360,18 +403,51 @@ function Jouer {
 function ChoixVous {
  for ($i = 0; $i -lt 3; $i++)
     { 
-        if($gbRadio.Controls[$i].Checked)
-        $gbRadio.Controls[$i].Checked
+        if($gbRadio.Controls[$i].Checked){
+            $Choix = $gbRadio.Controls[$i].Text
+              switch ($Choix)
+              {
+                 'Roche' {$pbVous.imageLocation = $imgRoche}
+                 'Papier' {$pbVous.imageLocation = $imgPapier}
+                 Default {$pbVous.imageLocation = $imgCiseau}
+              }
+#            AfficheAction("Vous avez choisi: $Choix")
+            return $Choix
+        }
     }
+}
+
 function ChoixAdver {
   Switch (Get-Random -Minimum 1 -Maximum 4)
   {
-	  '1' {$Ordi = "Roche"}
-	  '2' {$Ordi = "Papier"}
-	  Default {$Ordi = "Ciseau"}
+	  '1' {$Choix = "Roche"}
+	  '2' {$Choix = "Papier"}
+	  Default {$Choix = "Ciseau"}
   }
-  Write-Host $Ordi
-  return $Ordi
+  switch ($Choix)
+     {
+         'Roche' {$pbAdversaire.imageLocation = $imgRocheInv}
+         'Papier' {$pbAdversaire.imageLocation = $imgPapierInv}
+         Default {$pbAdversaire.imageLocation = $imgCiseauInv}
+     }
+#  AfficheAction("L'Adversaire a choisi: $Choix")
+  return $Choix
 }
+
+#
+# Pour utiliser cette fonction, par ex.:
+#                               AfficheAction("Voici mon message à afficher dans la boite de texte Action")
+#
+function AfficheAction ($Message) {
+        $MessageTime = $(get-date -uformat '%y-%m-%d %Hh%mm')
+        $rtbAction.text += $(get-date -uformat '%y-%m-%d %Hh%mm - ') + "$Message`n"
+        $rtbAction.SelectionStart= $rtbAction.Text.Length # Permet de mettre le curseur à la dernière ligne
+        $rtbAction.ScrollToCaret()                        # du RichTextBox Action
+}
+
+# À l'affchage du formulaire, on fait... 
+$frmJeuRPC.Add_Shown({
+        $Global:Matches= 0
+    })
 
 [void]$frmJeuRPC.ShowDialog()
