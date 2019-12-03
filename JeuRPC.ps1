@@ -368,6 +368,7 @@ $txtRegles.width                 = 465
 $txtRegles.height                = 70
 $txtRegles.location              = New-Object System.Drawing.Point(5,40)
 $txtRegles.Font                  = $Font
+                                   # https://www.regles-jeux-plein-air.com/regle-du-pierre-feuille-ciseaux/
 $txtRegles.Text                  = "Une fois à trois les joueurs révèlent leur main (roche, papier ou ciseau) en même temps. La plus forte des formes l'emporte et le joueur marque le point gagnant. Si les deux joueurs utilisent la même forme c'est un match nul."
 
 #
@@ -569,6 +570,12 @@ function AfficheAction ($Message) {
 
 ### Debut region Evenements{
 
+# À l'affchage du formulaire, on fait... 
+$frmJeuRPC.Add_Shown(  { 
+        rm $Global:FichierLog
+        Redemarrer
+} )
+
 # Événement de clic sur le bouton $btnRoche qui va rendre le $rbtRoche "checked" 
 
 $btnRoche.Add_Click({ $rbtRoche.Checked = $True})
@@ -662,4 +669,6 @@ $frmJeuRPC.Add_KeyDown( {
 ### Debut region Evenements{
 
 # Comme dirait mon professeur: Rock and roll !          :)
-[void]$frmJeuRPC.ShowDialog()
+[void]$frmJeuRPC.ShowDialog(
+ 
+)

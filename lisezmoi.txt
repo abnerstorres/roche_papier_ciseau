@@ -1,0 +1,25 @@
+Nom: Abner Siqueira Torres
+Date de début: 28 nov 2019
+Date de Fin: 03 dec 2019
+
+GitHub: https://github.com/abnerstorres/roche_papier_ciseau/
+
+- Liste des fichiers du projet:
+
+\ROCHE_PAPIER_CISEAU
+│   JeuRPC.ps1
+│   lisezmoi.txt
+│   log.txt
+│   README.md
+│
+└───img
+        ciseau.png
+        ciseauInv.png
+        default.png
+        fierbourg.ico
+        papier.png
+        papierInv.png
+        regles.jpg
+        regles.png
+        roche.png
+        rocheInv.png
